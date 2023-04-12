@@ -1,0 +1,2 @@
+# gptprompts
+generate gpt prompts
