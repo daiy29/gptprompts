@@ -46,14 +46,15 @@ for category in response:
 f.write("----------------------------------------------------------------------\n")
 
 for filtered in parsed:
-    prompt = "Generate 20 open ended but engaging one sentence prompts for a support group about " + filtered + " and " + topic + ". Remove the numbering from your response "
+    prompt = "I'm an expert on " + topic + ", and I'm running a support group for people interested in learning about it. To make sure this group is active, I want to ask engaging questions to the members about a subtopic of " + topic + ". This subtopic is " + filtered + "This question shouldn't be too specific, but also interesting enough to talk about in a forum environment. After participating in the discussion, members should feel like they've contributed to the discussion, and learned something. The question also shouldn't be too long. Come up with 10 such questions. "
+    # prompt = "Generate 20 open ended but engaging one sentence prompts for a support group about " + filtered + " and " + topic + ". Remove the numbering from your response "
     completion = openai.ChatCompletion.create(
     model=model_engine,
       messages=[
     {"role": "system", "content": "Do not include numbers in your response"},
     {"role": "user", "content": prompt}
     ],   
-    max_tokens=4000,
+    max_tokens=3940,
     temperature=0,)   
     response = completion['choices'][0]['message']['content'].translate(remove_digits).replace('-', '').replace('.', '')
     f.write(response)
