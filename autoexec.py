@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+if os.path.exists("../../prompts.txt"):
+    os.remove("../../prompts.txt")
+else:
+    pass
+f = open("../../prompts.txt", "w")
+
 openai.api_key = input("Enter API Key: ")
 topic = input("Enter topic: ")
-print("----------------------------------------------------------------------------------------------")
 
 
 # Set up the model and prompt
@@ -25,14 +31,20 @@ completion = openai.ChatCompletion.create(
     max_tokens=4000,
     temperature=0,
 )   
+
 response = completion['choices'][0]['message']['content'].split('\n')
 parsed = []
 remove_digits = str.maketrans('', '', digits)
+print("Generating prompts into a prompts.txt files. Please do not close the console")
+f.write(completion['choices'][0]['message']['content'].translate(remove_digits).replace('-', '').replace('.', ''))
+f.write("\n")
+
 for category in response:
     newCategory = category.translate(remove_digits).replace('-', '').replace('.', '').replace(' ', '')
     parsed.append(newCategory)
-    print(newCategory)
-print("----------------------------------------------------------------------------------------------")
+
+f.write("----------------------------------------------------------------------\n")
+
 for filtered in parsed:
     prompt = "Generate 20 open ended but engaging one sentence prompts for a support group about " + filtered + " and " + topic + ". Remove the numbering from your response "
     completion = openai.ChatCompletion.create(
@@ -44,7 +56,11 @@ for filtered in parsed:
     max_tokens=4000,
     temperature=0,)   
     response = completion['choices'][0]['message']['content'].translate(remove_digits).replace('-', '').replace('.', '')
-    print(response)
+    f.write(response)
+
+f.close()
+print("done")
+
 
 
 
